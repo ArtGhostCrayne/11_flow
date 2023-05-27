@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.google.android.material.snackbar.Snackbar
+import ru.netology.nmedia.BuildConfig
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -40,6 +42,11 @@ class FeedFragment : Fragment() {
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
+            }
+
+            override fun onPhoto(post: Post) {
+                findNavController().navigate(R.id.action_feedFragment_to_PhotoFragment, bundleOf(
+                    PhotoFragment.ARG_IMG to "${ BuildConfig.BASE_URL}/media/${post.attachment?.url}"))
             }
 
             override fun onShare(post: Post) {
@@ -81,15 +88,16 @@ class FeedFragment : Fragment() {
         binding.newPosts.setOnClickListener {
             viewModel.viewAll()
             binding.newPosts.isVisible = false
+            binding.list.smoothScrollToPosition(0)
         }
 
-        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    binding.list.smoothScrollToPosition(0)
-                }
-            }
-        })
+//        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
+//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+//                if (positionStart == 0) {
+//                    binding.list.smoothScrollToPosition(0)
+//                }
+//            }
+//        })
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()
@@ -98,6 +106,8 @@ class FeedFragment : Fragment() {
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
         }
+
+
 
         return binding.root
     }
