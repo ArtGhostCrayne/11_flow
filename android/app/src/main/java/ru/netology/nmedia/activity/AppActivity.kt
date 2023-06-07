@@ -2,19 +2,40 @@ package ru.netology.nmedia.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.viewmodel.AuthViewModel
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
+   private val viewModel: AuthViewModel by viewModels()
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
@@ -38,7 +59,44 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
         lifecycleScope
 
+        viewModel.data.observe(this) {
+            invalidateOptionsMenu()
+        }
+
         checkGoogleApiAvailability()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        menu.let {
+            it.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
+            it.setGroupVisible(R.id.authenticated, viewModel.authenticated)
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.signin -> {
+                // TODO: just hardcode it, implementation must be in homework
+                findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
+
+              //  AppAuth.getInstance().setAuth(5, "x-token")
+                true
+            }
+            R.id.signup -> {
+                // TODO: just hardcode it, implementation must be in homework
+//                AppAuth.getInstance().setAuth(5, "x-token")
+                true
+            }
+            R.id.signout -> {
+                // TODO: just hardcode it, implementation must be in homework
+                AppAuth.getInstance().removeAuth()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun checkGoogleApiAvailability() {
@@ -58,5 +116,11 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         FirebaseMessaging.getInstance().token.addOnSuccessListener {
             println(it)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }
