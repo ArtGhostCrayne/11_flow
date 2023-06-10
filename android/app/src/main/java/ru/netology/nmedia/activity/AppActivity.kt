@@ -1,18 +1,17 @@
 package ru.netology.nmedia.activity
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -25,8 +24,15 @@ import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.viewmodel.AuthViewModel
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
-   private val viewModel: AuthViewModel by viewModels()
+    private val viewModel: AuthViewModel by viewModels()
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+        Toast.makeText(
+            applicationContext,
+            android.R.string.yes, Toast.LENGTH_SHORT
+        ).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +42,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+
 
         intent?.let {
             if (it.action != Intent.ACTION_SEND) {
@@ -82,19 +90,46 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 // TODO: just hardcode it, implementation must be in homework
                 findNavController(R.id.nav_host_fragment).navigate(R.id.action_feedFragment_to_loginFragment)
 
-              //  AppAuth.getInstance().setAuth(5, "x-token")
+                //  AppAuth.getInstance().setAuth(5, "x-token")
                 true
             }
+
             R.id.signup -> {
                 // TODO: just hardcode it, implementation must be in homework
 //                AppAuth.getInstance().setAuth(5, "x-token")
                 true
             }
+
             R.id.signout -> {
-                // TODO: just hardcode it, implementation must be in homework
-                AppAuth.getInstance().removeAuth()
+                val currentFragment =
+                    findNavController(R.id.nav_host_fragment).currentDestination?.id
+
+                if (currentFragment == R.id.newPostFragment) {
+                    val dialog = AlertDialog.Builder(this)
+                    dialog.setTitle("Выход")
+                    dialog.setMessage("Вы уверены, что хотите выйти")
+                    dialog.setIcon(android.R.drawable.ic_dialog_alert)
+                    dialog.setPositiveButton("Да") { dialogInterface, which ->
+                        AppAuth.getInstance().removeAuth()
+                        findNavController(R.id.nav_host_fragment).navigateUp()
+                        Toast.makeText(this, "Вы вышли из аккаунта", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    dialog.setNegativeButton("Нет") { dialogInterface, which ->
+
+                    }
+
+                    val alertDialog: AlertDialog = dialog.create()
+                    alertDialog.show()
+
+                } else {
+                    AppAuth.getInstance().removeAuth()
+                    Toast.makeText(this, "Вы вышли из аккаунта", Toast.LENGTH_LONG)
+                        .show()
+                }
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
