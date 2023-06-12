@@ -1,10 +1,12 @@
 package ru.netology.nmedia.activity
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,11 +20,14 @@ import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.util.Dialog
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +42,11 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+                if (!authViewModel.authenticated) {
+                    Dialog.needLogin(binding.root.context, this@FeedFragment)
+                } else {
+                    viewModel.likeById(post.id)
+                }
             }
 
             override fun onRemove(post: Post) {
@@ -45,8 +54,11 @@ class FeedFragment : Fragment() {
             }
 
             override fun onPhoto(post: Post) {
-                findNavController().navigate(R.id.action_feedFragment_to_PhotoFragment, bundleOf(
-                    PhotoFragment.ARG_IMG to "${ BuildConfig.BASE_URL}/media/${post.attachment?.url}"))
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_PhotoFragment, bundleOf(
+                        PhotoFragment.ARG_IMG to "${BuildConfig.BASE_URL}/media/${post.attachment?.url}"
+                    )
+                )
             }
 
             override fun onShare(post: Post) {
@@ -104,10 +116,12 @@ class FeedFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            if (!authViewModel.authenticated) {
+                Dialog.needLogin(binding.root.context, this@FeedFragment)
+            } else {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            }
         }
-
-
 
         return binding.root
     }
