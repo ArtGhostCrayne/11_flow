@@ -103,13 +103,13 @@ class FeedFragment : Fragment() {
             binding.list.smoothScrollToPosition(0)
         }
 
-//        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
-//            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                if (positionStart == 0) {
-//                    binding.list.smoothScrollToPosition(0)
-//                }
-//            }
-//        })
+        adapter.registerAdapterDataObserver(object : AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    binding.list.smoothScrollToPosition(0)
+                }
+            }
+        })
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()

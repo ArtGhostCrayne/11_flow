@@ -39,4 +39,7 @@
     <string name="login">Login</string>
     <string name="password">password</string>
     <string name="sing_in">Sing in</string>
+    <string name="registration">registration</string>
+    <string name="name">name</string>
+    <string name="action_reg_short">registration</string>
 </resources>

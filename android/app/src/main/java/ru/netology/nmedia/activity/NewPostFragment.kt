@@ -116,6 +116,8 @@ class NewPostFragment : Fragment() {
             viewModel.changePhoto(null, null)
         }
 
+
+
         viewModel.postCreated.observe(viewLifecycleOwner) {
             findNavController().navigateUp()
         }

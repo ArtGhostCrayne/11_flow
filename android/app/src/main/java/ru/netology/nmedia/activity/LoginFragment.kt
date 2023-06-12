@@ -8,14 +8,10 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.databinding.FragmentLoginBinding
-import ru.netology.nmedia.model.AuthModelState
 import ru.netology.nmedia.util.AndroidUtils
 import ru.netology.nmedia.viewmodel.LoginViewModel
-import ru.netology.nmedia.viewmodel.PostViewModel
 
 class LoginFragment : Fragment() {
 
