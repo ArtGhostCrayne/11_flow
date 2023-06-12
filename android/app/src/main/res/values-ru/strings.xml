@@ -23,4 +23,11 @@
     <string name="channel_remote_description">Уведомления с удалённого сервера</string>
     <string name="remove">remove</string>
     <string name="menu_save">Save</string>
+    <string name="sign_in">Auth</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="sing_in">Войти</string>
+    <string name="registration">registration</string>
+    <string name="name">name</string>
+    <string name="action_reg_short">registration</string>
 </resources>
