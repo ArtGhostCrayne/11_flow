@@ -48,9 +48,6 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         dao.viewAll()
     }
 
-
-
-
     override fun getNewerCount(): Flow<Int> = flow {
         while (true) {
             delay(10_000L)
@@ -73,7 +70,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             val response = PostsApi.service.save(post)
             println(post)
             println("!!!!!!!!!!response!!!!!!!!!!")
-//            println(response)
+            println(response)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
