@@ -21,6 +21,13 @@
     <string name="notification_user_liked">%1$s поставил лайк посту %2$s</string>
     <string name="channel_remote_name">Уведомления с сервера</string>
     <string name="channel_remote_description">Уведомления с удалённого сервера</string>
-    <string name="remove">remove</string>
-    <string name="menu_save">Save</string>
+    <string name="remove">Удалить</string>
+    <string name="menu_save">Сохранить</string>
+    <string name="sign_in">Auth</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="sing_in">Войти</string>
+    <string name="registration">Регистрация</string>
+    <string name="name">Имя</string>
+    <string name="action_reg_short">Регистрация</string>
 </resources>
