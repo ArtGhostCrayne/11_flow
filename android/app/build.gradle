@@ -98,6 +98,8 @@ dependencies {
     implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.google.android.gms:play-services-base:$play_services_base_version"
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1'
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
